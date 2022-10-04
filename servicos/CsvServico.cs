@@ -11,9 +11,12 @@ namespace ecommerce.servicos
         {
             var linhas = colunas + "\n";
             foreach(var obj in lista){
-                var iObject = (IObject)obj;
-                linhas += $"{iObject.Id}\n";
-                // linhas += $"{obj.Id};{obj.Nome};{obj.Email};{obj.Telefone};{obj.EnderecoCompleto}\n";
+                var colunasObj = "";
+                foreach(var p in obj.GetType().GetProperties()){
+                    colunasObj += p.GetValue(obj) + ";";
+                }
+
+                linhas += $"{colunasObj}\n";
             }
 
             File.WriteAllText(arquivo, linhas);
@@ -33,8 +36,18 @@ namespace ecommerce.servicos
                 var coluns = line.Split(';');
                 if(coluns[0].Trim().ToLower() == "id" || coluns[0].Trim().ToLower() == "") continue;
 
-                var obj = (IObject)Activator.CreateInstance(typeof(T));
-                obj.Id = int.Parse(coluns[0]);
+                var obj = Activator.CreateInstance(typeof(T));
+                var i = 0;
+                foreach(var p in obj.GetType().GetProperties()){
+                    if(p.PropertyType == typeof(int)){
+                        p.SetValue(obj, int.Parse(coluns[i]));
+                    }
+                    else{
+                        p.SetValue(obj, coluns[i]);
+                    }
+                    i++;
+                }
+
                 lista.Add((T)obj);
             }
             
