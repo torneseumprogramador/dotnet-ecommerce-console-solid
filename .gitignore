@@ -492,6 +492,7 @@ FodyWeavers.xsd
 # Windows Installer files from build outputs
 
 clientes.json
+clientes.csv
 
 # JetBrains Rider
 *.sln.iml
