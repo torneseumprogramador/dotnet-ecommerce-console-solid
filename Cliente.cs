@@ -30,6 +30,7 @@ namespace ecommerce
 
         public static List<Cliente> Todos()
         {
+            if(!File.Exists(ARQUIVO)) File.WriteAllText(ARQUIVO, "[]");
             List<Cliente> clientes = new List<Cliente>();
             var clientesJson = File.ReadAllText(ARQUIVO);
             clientes = JsonConvert.DeserializeObject<List<Cliente>>(clientesJson);
