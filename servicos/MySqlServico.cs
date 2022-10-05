@@ -5,11 +5,11 @@ using Newtonsoft.Json;
 
 namespace ecommerce.servicos
 {
-    class JsonServico : IPersistencia
+    class MySqlServico : IPersistencia
     {
         private string caminhoArquivo<T>()
         {
-            return  "db/" + typeof(T).Name.ToLower() + "s.json";
+            return  "db/" + typeof(T).Name.ToLower() + "s.mysql";
         }
 
         public void Salvar<T>(List<T> lista)

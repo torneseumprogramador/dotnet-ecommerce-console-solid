@@ -5,10 +5,16 @@ using Newtonsoft.Json;
 
 namespace ecommerce.servicos
 {
-    class CsvServico
+    class CsvServico: IPersistencia
     {
-        public static void Salvar<T>(string colunas, string arquivo, List<T> lista)
+        private string caminhoArquivo<T>()
         {
+            return  "db/" + typeof(T).Name.ToLower() + "s.csv";
+        }
+        public void Salvar<T>(List<T> lista)
+        {
+            var colunas = getColunas<T>();
+
             var linhas = colunas + "\n";
             foreach(var obj in lista){
                 var colunasObj = "";
@@ -19,11 +25,23 @@ namespace ecommerce.servicos
                 linhas += $"{colunasObj}\n";
             }
 
-            File.WriteAllText(arquivo, linhas);
+            File.WriteAllText(this.caminhoArquivo<T>(), linhas);
         }
 
-        public static List<T> Todos<T>(string colunas, string arquivo, Type tipoObj)
+        private string getColunas<T>()
         {
+            var colunas = string.Empty;
+            foreach(var p in typeof(T).GetProperties()){
+                colunas += p.Name + ";";
+            }
+
+            return colunas;
+        }
+
+        public List<T> Todos<T>()
+        {
+            var colunas = getColunas<T>();
+            var arquivo = caminhoArquivo<T>();
             if(!File.Exists(arquivo)) File.WriteAllText(arquivo, colunas);
 
             var lista = (List<T>)Activator.CreateInstance(typeof(List<T>));
